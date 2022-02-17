@@ -94,17 +94,32 @@ resource "google_monitoring_alert_policy" "alert_policy" {
   display_name = "My AlertingPolicy"
   combiner     = "OR"
   conditions {
-    display_name = "test condition"
+    display_name = "test condition for cpu utilization"
     condition_threshold {
       filter     = "resource.type=gce_instance AND metric.type=\"compute.googleapis.com/instance/cpu/utilization\""
       duration   = "60s"
       comparison = "COMPARISON_GT"
-      threshold_value = "0"
+      threshold_value = "1.0"
       aggregations {
         alignment_period   = "60s"
         per_series_aligner = "ALIGN_MEAN"
       }
     }
+
+  }
+  conditions {
+    display_name = "test condition for disk byte reads"
+    condition_threshold {
+      filter     = "resource.type=gce_instance AND metric.type=\"compute.googleapis.com/instance/disk/read_bytes_count\""
+      duration   = "60s"
+      comparison = "COMPARISON_GT"
+      threshold_value = "1.0"
+      aggregations {
+        alignment_period   = "60s"
+        per_series_aligner = "ALIGN_MEAN"
+      }
+    }
+
   }
 notification_channels=google_monitoring_notification_channel.basic.*.id
   
@@ -113,6 +128,6 @@ resource "google_monitoring_notification_channel" "basic" {
   display_name = "Webhooksalert"
   type         = "webhook_tokenauth"
   labels = {
-  "url"="https://webhook.site/b6f18a7e-9431-4a74-900b-1b81a5b43e35"
+  "url"="https://webhook.site/348e676a-b801-4722-9f33-9a0f124eaec5"
   }
 }
